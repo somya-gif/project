@@ -96,7 +96,6 @@ You can host this app for free on **Streamlit Community Cloud**:
 ├── README.md             # This guide
 ├── START_WINDOWS.bat     # 1-click startup script for Windows
 ├── .gitignore
-├── LICENSE
 ├── src/
 │   ├── features.py       # Data cleaning and customer features
 │   ├── pipeline.py       # Full pipeline: download, clean, train, and score
