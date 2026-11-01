@@ -1,76 +1,71 @@
-# Retention Lens
+# Retention Lens 🔁
 
-E-commerce analytics and 30-day repeat purchase prediction.
+**Can we predict which customers will come back and buy again?**
+
+That's the question I built this project around. Using real transaction data from a UK online retailer (~1M rows over 2 years), I built an end-to-end ML pipeline that predicts whether a customer will make a purchase in the next 30 days.
 
 ![Measured historical evaluation](docs/Measured_Evidence.png)
 
-Built on the UCI Online Retail II dataset (~1M transaction lines, Dec 2009–Dec 2011). The pipeline cleans raw transactions, engineers point-in-time customer features, trains a gradient boosting model, and serves predictions through both a Streamlit app and a Power BI report.
+## What it does
 
-## Quick start (Windows)
+- 📊 **Cleans messy retail data** — handles duplicates, missing IDs, returns/credits, and invalid rows
+- 🧠 **Trains a prediction model** — compared 3 approaches, gradient boosting came out on top
+- 🎯 **Scores every customer** — each gets a repeat-purchase probability (the top 10% of scored customers buy at 3.14× the average rate)
+- 💻 **Interactive Streamlit app** — explore sales trends, look up individual customers, build campaign audiences
+- 📈 **Power BI report** — 5-page dashboard covering sales, retention, cohorts, predictions, and model performance
 
-Requires Python 3.12 (64-bit). Double-click `START_WINDOWS.bat`, or run manually:
+## The interesting bits
+
+The model achieves **0.557 average precision** against a 20.8% base rate — meaning it's significantly better than random at finding who'll buy next. The top-scored 10% of customers contain 65% actual repeat buyers.
+
+I was careful about **data leakage** — the model only ever sees past data when making predictions. Train, validation, and test sets are separated by time with gaps between them, just like you'd need in production. There's even a [test](tests/test_features.py) that proves changing future data doesn't affect historical features.
+
+One fun bug I caught: default CSV parsing rounds floats at the 8th decimal, which was enough to flip 2 out of 5,877 predictions at a tree split boundary. Fixed it with `float_precision='round_trip'`.
+
+## Quick start
+
+Needs Python 3.12. On Windows, just double-click `START_WINDOWS.bat`, or:
 
 ```powershell
-cd C:\Projects\repeat_purchase
 py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m src.pipeline
-.\.venv\Scripts\python.exe powerbi\build_project.py
+.\.venv\Scripts\python.exe -m src.pipeline     # downloads data & trains (~5 min)
 .\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-The pipeline downloads the public UCI source (~43.5 MB) and generates all local data. No API keys needed.
+No API keys needed — the pipeline downloads the [public UCI dataset](https://doi.org/10.24432/C5CG6D) automatically.
 
-## Retrain & test
+## Test results (held-out, Aug–Nov 2011)
 
-```powershell
-$env:OMP_NUM_THREADS="2"
-$env:OPENBLAS_NUM_THREADS="2"
-.\.venv\Scripts\python.exe -m src.pipeline
-.\.venv\Scripts\python.exe -m unittest discover -s tests -v
-```
-
-## Held-out test results
-
-| Metric | Value |
+| What | Value |
 |---|---:|
-| Test snapshots | 21,489 |
-| Base rate | 20.81% |
-| Average precision | 0.5569 |
-| ROC AUC | 0.7906 |
-| Precision @ 0.27 | 52.98% |
-| Recall @ 0.27 | 50.37% |
-| F1 | 0.5164 |
+| Customers scored | 21,489 snapshots |
+| Actually bought again | 20.81% |
+| Average precision | 0.557 |
+| ROC AUC | 0.791 |
+| Precision @ threshold | 53% |
+| Recall @ threshold | 50% |
 | Top-decile lift | 3.14× |
 
-Threshold 0.27 was chosen to maximize validation F1. Evaluation uses August–November 2011 snapshots with strict temporal separation from training.
+## Project layout
 
-## Streamlit app
+```
+src/features.py      Feature engineering + data cleaning
+src/pipeline.py      Full ML pipeline (download → train → evaluate → export)
+app.py               Streamlit app (5 pages)
+powerbi/             Power BI report (open RetentionLens.pbip)
+tests/               Unit + integration tests (leakage, parity, reconciliation)
+artifacts/           Trained model, metrics, data provenance
+docs/                Model card, data dictionary, setup guides
+```
 
-- **Sales overview** — gross/net sales, credits, orders, trend
-- **Customer prediction** — select a customer, see repeat-purchase probability and order history
-- **Retention cohorts** — monthly cohort matrix, returning-customer trends
-- **Campaign shortlist** — filter by likelihood/spend, upload customer IDs, download scores
-- **Model evidence** — test metrics, monthly performance, calibration, feature importance
+## How I'd take this further
 
-## Power BI
+- Add seasonal features (holiday spending patterns differ a lot)
+- Calibrate the probabilities properly on a dedicated time block
+- Run an A/B test to measure if targeting high-probability customers actually increases revenue (prediction ≠ causation)
+- Hook it up to a live data feed with monitoring for feature drift
 
-Run `python powerbi/build_project.py`, then open `powerbi/RetentionLens.pbip` in Power BI Desktop and refresh. Five report pages with DAX measures included. See [Power BI setup guide](docs/POWER_BI_WINDOWS.md).
+## Data
 
-## Project structure
-
-| Path | Purpose |
-|---|---|
-| `src/features.py` | Data cleaning and point-in-time feature engineering |
-| `src/pipeline.py` | Download, train, evaluate, export |
-| `app.py` | Streamlit app |
-| `data/processed/` | Generated CSVs (git-ignored) |
-| `artifacts/` | Trained model, metrics, provenance |
-| `powerbi/` | Report source, semantic model, DAX, theme |
-| `tests/` | Unit and integration tests |
-| `docs/` | Model card, data dictionary, setup guides |
-
-## Data source
-
-Chen, D. (2012). **Online Retail II** [Dataset]. UCI Machine Learning Repository.
-https://doi.org/10.24432/C5CG6D — License: CC BY 4.0.
+[UCI Online Retail II](https://doi.org/10.24432/C5CG6D) by Daqing Chen · CC BY 4.0
