@@ -1,8 +1,8 @@
-# Retention Lens
 
-**Sumit Gole · E-commerce analytics and 30-day repeat purchase prediction**
 
-Repository: [somya-gif/project](https://github.com/somya-gif/project). Published to this account at the user's request; original project attribution is retained.
+*· E-commerce analytics and 30-day repeat purchase prediction**
+
+
 
 ![Measured historical evaluation](docs/Measured_Evidence.png)
 
