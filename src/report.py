@@ -84,7 +84,7 @@ def main():
     ax.set_title('Probability reliability & calibration', loc='left', pad=15)
     ax.legend(frameon=False)
 
-    fig.text(0.06, 0.025, 'Retention Lens  |  Evaluated on 21,489 held-out customer snapshots (Aug–Nov 2011)', fontsize=10, color='#475569')
+    fig.text(0.06, 0.025, 'Soumya Prakash Patel  |  Retention Lens  |  21,489 test snapshots (Aug–Nov 2011)', fontsize=10, color='#475569')
     fig.subplots_adjust(top=0.85, bottom=0.11, left=0.07, right=0.96, hspace=0.48, wspace=0.3)
 
     output_path = ROOT / 'docs/Measured_Evidence.png'

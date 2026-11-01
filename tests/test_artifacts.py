@@ -17,6 +17,11 @@ DATA = ROOT / 'data/processed'
 
 class ArtifactIntegrity(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        if not (DATA / 'customer_predictions.csv').exists():
+            raise unittest.SkipTest("Run 'python -m src.pipeline' first to generate processed data for integration tests.")
+
     def test_export_scores_match_model(self):
         """Verifies exported probabilities match direct model predictions."""
         bundle = joblib.load(ROOT / 'artifacts/model.joblib')

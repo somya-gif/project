@@ -10,8 +10,6 @@ if not exist data\processed\customer_predictions.csv (
   .venv\Scripts\python.exe -m src.pipeline
   if errorlevel 1 goto fail
 )
-.venv\Scripts\python.exe powerbi\build_project.py
-if errorlevel 1 goto fail
 .venv\Scripts\python.exe -m streamlit run app.py
 goto :eof
 :fail

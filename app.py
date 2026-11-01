@@ -7,7 +7,7 @@ import streamlit as st
 
 ROOT=Path(__file__).resolve().parent
 DATA=ROOT/'data/processed'
-st.set_page_config(page_title='Retention Lens | Sumit Gole',page_icon='↻',layout='wide')
+st.set_page_config(page_title='Retention Lens | Soumya Prakash Patel', page_icon='↻', layout='wide')
 
 @st.cache_data
 def read(name):
@@ -18,7 +18,7 @@ def bundle():
     return joblib.load(ROOT/'artifacts/model.joblib')
 
 st.title('Retention Lens')
-st.caption('E-commerce repeat purchase prediction · Sumit Gole')
+st.caption('E-commerce repeat purchase prediction · Soumya Prakash Patel')
 if not (ROOT/'artifacts/metrics.json').exists():
     st.error('Run `python -m src.pipeline` first to generate the data.');st.stop()
 if not (DATA/'customer_predictions.csv').exists():

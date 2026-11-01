@@ -4,12 +4,25 @@ Functional tests for the Streamlit dashboard workflows.
 
 import unittest
 from pathlib import Path
-from streamlit.testing.v1 import AppTest
+
+try:
+    from streamlit.testing.v1 import AppTest
+    HAS_STREAMLIT = True
+except ImportError:
+    HAS_STREAMLIT = False
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class AppFlows(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        if not HAS_STREAMLIT:
+            raise unittest.SkipTest("Streamlit is not installed in the current Python environment.")
+        data_pred = ROOT / 'data/processed/customer_predictions.csv'
+        if not data_pred.exists():
+            raise unittest.SkipTest("Run 'python -m src.pipeline' first to generate data for app tests.")
 
     def test_all_pages_and_customer_selection(self):
         """Verifies all five app tabs and customer dropdown work without exceptions."""

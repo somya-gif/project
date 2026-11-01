@@ -3,9 +3,7 @@ End-to-end data and machine learning pipeline for repeat purchase prediction.
 Run directly with: python -m src.pipeline
 """
 
-import hashlib
 import json
-import platform
 import sys
 import urllib.request
 import zipfile
@@ -67,9 +65,9 @@ def calculate_metrics(y_true, y_prob, threshold: float) -> dict:
     }
 
 
-def export_bi_tables(purchases: pd.DataFrame, credits: pd.DataFrame, orders: pd.DataFrame, end_date: pd.Timestamp):
+def export_analytics_tables(purchases: pd.DataFrame, credits: pd.DataFrame, orders: pd.DataFrame, end_date: pd.Timestamp):
     """
-    Exports clean analytical tables used by Power BI and Streamlit:
+    Exports clean analytical tables used by the Streamlit app:
     - sales_orders.csv
     - customers.csv
     - calendar.csv
@@ -209,21 +207,9 @@ def main():
 
     orders.to_csv(DATA / 'known_customer_orders.csv', index=False)
     dump_json(ARTIFACTS / 'data_quality.json', audit)
-    dump_json(ARTIFACTS / 'provenance.json', {
-        'source': DATA_URL,
-        'doi': '10.24432/C5CG6D',
-        'creator': 'Daqing Chen',
-        'license': 'CC BY 4.0',
-        'xlsx_sha256': hashlib.sha256(xlsx_path.read_bytes()).hexdigest(),
-        'python': sys.version,
-        'pandas': pd.__version__,
-        'sklearn': sklearn.__version__,
-        'platform': platform.platform(),
-        'reliable_observation_end_exclusive': observation_end,
-    })
 
     print('Exporting analytics tables...', flush=True)
-    export_bi_tables(purchases, credits, orders, observation_end)
+    export_analytics_tables(purchases, credits, orders, observation_end)
 
     # Define time-based train, validation, and test snapshot dates
     split_dates = {
