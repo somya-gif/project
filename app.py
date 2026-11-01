@@ -1,4 +1,4 @@
-"""Retention Lens — e-commerce repeat purchase prediction demo."""
+"""Retention Lens — e-commerce repeat purchase prediction."""
 from pathlib import Path
 import json
 import joblib
