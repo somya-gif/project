@@ -2,101 +2,122 @@
 
 **Can we predict which customers will come back and buy again?**
 
-That's the question I built this project around. Using transaction data from a UK online retailer (~1M rows over 2 years), I built an end-to-end machine learning pipeline that predicts whether an existing customer will make a purchase in the next 30 days.
+This project answers that question using real transaction data from a UK online store (~1 million orders over 2 years). It uses Machine Learning to predict whether an existing customer will buy something again in the next 30 days.
 
 ![Evaluation Summary](docs/Measured_Evidence.png)
 
-## What it does
+---
 
-- 📊 **Cleans messy retail transactions** — drops duplicates, separates returns/credits from purchases, and handles missing customer IDs
-- 🧠 **Engineers point-in-time RFM features** — calculates customer recency, frequency, monetary value, tenure, and order spacing without lookahead leakage
-- 🎯 **Trains & evaluates ML models** — compares a baseline, logistic regression, and histogram gradient boosting on held-out temporal test splits
-- 💻 **Interactive Streamlit dashboard** — explore sales trends, look up customer repeat probabilities, analyze cohorts, and filter campaign audiences
+## What Does This Project Do?
 
-## Key Results (Held-Out Test Set: Aug–Nov 2011)
+1. **Cleans messy sales data** — removes duplicate lines, separates returned orders from real purchases, and fixes missing customer numbers.
+2. **Creates smart customer signals** — checks how recently each person bought, how often they buy, and how much money they spent (without peeking into the future).
+3. **Trains machine learning models** — compares 3 different models and picks the best one (Gradient Boosting).
+4. **Shows results in a web app** — an interactive Streamlit website where you can see sales trends, check any customer's score, and download customer lists for marketing campaigns.
 
-| Metric | Value | Interpretation |
+---
+
+## How Well Does the Model Work?
+
+We tested the model on 4 months of completely unseen future data (August to November 2011). Here is how it performed:
+
+| What we measured | Model score | What this means in plain words |
 |---|---:|---|
-| **Base Rate** | 20.81% | ~21% of customer snapshots had a repeat purchase |
-| **Average Precision** | 0.557 | Significantly outperforms the 0.208 baseline |
-| **ROC AUC** | 0.791 | Strong ranking ability across test customers |
-| **Precision @ 0.27** | 53.0% | 53% of predicted buyers actually bought |
-| **Recall @ 0.27** | 50.4% | Captures ~half of all repeat buyers |
-| **Top-Decile Lift** | 3.14× | The top 10% scored customers buy at >3× the average rate |
+| **Base Rate** | 20.8% | In normal times, only about 21 out of 100 customers come back to buy within 30 days. |
+| **Top 10% Lift** | **3.14×** | Customers in the model's top 10% list are **over 3 times more likely to buy** than average. |
+| **ROC AUC** | **0.791** | When comparing a buyer and a non-buyer, the model correctly ranks the buyer higher ~79% of the time. |
+| **Precision** | **53.0%** | When the model says "this person will buy", it is correct 53% of the time (more than double the 21% baseline). |
+| **Recall** | **50.4%** | The model catches about half of all repeat buyers. |
 
-The decision threshold (0.27) was selected on validation data to maximize F1 score.
+---
 
-## Engineering Highlight: Avoiding Data Leakage
+## Why Is Data Leakage Important? (And How We Avoided It)
 
-To prevent the model from learning from future data:
-1. **Strict Temporal Splits:** Training (June 2010 – Feb 2011), Validation (April – June 2011), and Test (Aug – Nov 2011) have buffer gaps so 30-day outcome windows never overlap.
-2. **Point-in-Time Features:** All customer aggregations (spend, order count, recency) strictly filter `order_date < cutoff`.
-3. **Automated Leakage Test:** `tests/test_features.py` programmatically modifies future data and verifies that historical features remain 100% unchanged.
+**What is data leakage?**  
+It happens when a model accidentally "sees the future" during training. For example, if you are predicting what a customer will do in July, you cannot use their August purchases to help make that prediction.
 
-## Quick Start (Windows)
+**How we prevented it:**
+- **Time Gaps:** We trained on older data (2010 to early 2011) and tested on newer data (late 2011). We left a gap between them so windows never overlap.
+- **Strict Cutoffs:** When calculating customer stats, the code strictly ignores any order placed after the cutoff date.
+- **Automatic Test:** We have a test in `tests/test_features.py` that intentionally changes future data and proves that past numbers stay 100% unchanged.
 
-Requires Python 3.12 (64-bit). You can double-click `START_WINDOWS.bat`, or run via terminal:
+---
+
+## Quick Start (How to Run It on Windows)
+
+You only need **Python** installed. Double-click **`START_WINDOWS.bat`**, or run these 4 commands in your terminal:
 
 ```powershell
-# 1. Create and activate virtual environment
-py -3.12 -m venv .venv
+# 1. Create and turn on a virtual environment
+python -m venv .venv
 .\.venv\Scripts\activate
 
-# 2. Install dependencies
+# 2. Install the required libraries
 pip install -r requirements.txt
 
-# 3. Run the pipeline (downloads data, cleans, trains models, scores customers)
+# 3. Download the data and train the model (takes ~3 minutes on first run)
 python -m src.pipeline
 
-# 4. Launch the dashboard
+# 4. Open the web dashboard
 streamlit run app.py
 ```
 
-The pipeline automatically downloads the public UCI dataset (~43.5 MB) on its first run. No API keys needed.
+Your browser will automatically open to `http://localhost:8501`.
 
-## Running Tests
+---
+
+## How to Run Tests
+
+To make sure all calculations and leakage checks pass:
 
 ```powershell
 python -m unittest discover -s tests -v
 ```
 
-All 6 feature leakage unit tests and integration tests run in under a second.
+All tests run in less than 1 second.
 
-## Deployment
+---
 
-The app is built with Streamlit and can be deployed directly to [Streamlit Community Cloud](https://docs.streamlit.io/deploy/streamlit-community-cloud):
-1. Push your repo to GitHub.
-2. Connect your repo in Streamlit Community Cloud.
-3. Set `app.py` as the entrypoint with Python 3.12.
+## How to Host Online
 
-## Project Structure
+You can host this app for free on **Streamlit Community Cloud**:
+1. Push this folder to your GitHub account.
+2. Sign in to [share.streamlit.io](https://share.streamlit.io).
+3. Select your repository and set `app.py` as the main file.
+4. Click Deploy!
+
+---
+
+## Folder Structure
 
 ```
-├── app.py                # 5-page Streamlit web dashboard
-├── requirements.txt      # Python dependencies
-├── README.md             # Project overview
-├── START_WINDOWS.bat     # One-click Windows startup
+├── app.py                # The interactive Streamlit website
+├── requirements.txt      # 7 essential Python packages
+├── README.md             # This guide
+├── START_WINDOWS.bat     # 1-click startup script for Windows
 ├── .gitignore
 ├── LICENSE
 ├── src/
-│   ├── features.py       # Data cleaning & RFM point-in-time features
-│   ├── pipeline.py       # End-to-end pipeline (download, train, evaluate, score)
-│   └── report.py         # Script that generates docs/Measured_Evidence.png
+│   ├── features.py       # Data cleaning and customer features
+│   ├── pipeline.py       # Full pipeline: download, clean, train, and score
+│   └── report.py         # Creates the summary picture (Measured_Evidence.png)
 ├── tests/
-│   ├── test_features.py  # Unit tests for feature isolation & leakage prevention
-│   ├── test_artifacts.py # Integration & data reconciliation tests
-│   └── test_app.py       # UI flow tests
+│   ├── test_features.py  # Tests to ensure no future data leaks into the past
+│   ├── test_artifacts.py # Tests to ensure sales numbers and predictions match
+│   └── test_app.py       # Tests to ensure the website runs without crashing
 ├── artifacts/
-│   ├── model.joblib      # Trained Gradient Boosting model bundle
-│   ├── metrics.json      # Full evaluation metrics and time splits
-│   └── data_quality.json # Ingestion audit counts
+│   ├── model.joblib      # The saved trained machine learning model
+│   ├── metrics.json      # Saved test scores and evaluation numbers
+│   └── data_quality.json # Counts of cleaned rows and duplicate lines
 └── docs/
-    ├── DATA_DICTIONARY.md # Schema and column definitions
-    ├── MODEL_CARD.md      # Model assumptions and tradeoffs
+    ├── DATA_DICTIONARY.md # Simple explanations of every column and table
+    ├── MODEL_CARD.md      # Simple explanation of the model and its limits
     └── Measured_Evidence.png
 ```
 
-## Dataset Attribution
+---
 
-Chen, D. (2012). **Online Retail II** [Dataset]. UCI Machine Learning Repository.  
-https://doi.org/10.24432/C5CG6D (Licensed under CC BY 4.0).
+## Data Source
+
+This project uses the public **Online Retail II** dataset from the UCI Machine Learning Repository:  
+Chen, D. (2012). [UCI Repository Link](https://doi.org/10.24432/C5CG6D) (CC BY 4.0).
