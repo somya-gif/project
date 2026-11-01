@@ -1,0 +1,59 @@
+// Sales
+Orders = COUNTROWS(Sales)
+
+// Sales
+Active Known Customers = CALCULATE(DISTINCTCOUNT(Sales[customer_id]), Sales[customer_id] <> "UNKNOWN")
+
+// Sales
+Average Order Value = DIVIDE(SUM(Sales[revenue]), [Orders])
+
+// Sales
+Repeat Order Revenue = CALCULATE(SUM(Sales[revenue]), Sales[is_repeat_order] = 1)
+
+// Sales
+Repeat Buyer Share = VAR Known = FILTER(VALUES(Sales[customer_id]), Sales[customer_id] <> "UNKNOWN") RETURN DIVIDE(COUNTROWS(FILTER(Known, CALCULATE(COUNTROWS(Sales)) >= 2)), COUNTROWS(Known))
+
+// DailySales
+Gross Sales = SUM(DailySales[gross_sales])
+
+// DailySales
+Credits = SUM(DailySales[credits])
+
+// DailySales
+Net Invoiced Sales = [Gross Sales] - [Credits]
+
+// Cohorts
+Cohort Retention = IF(HASONEVALUE(Cohorts[month_index]), DIVIDE(SUM(Cohorts[active_customers]), SUM(Cohorts[cohort_size])))
+
+// Retention
+Monthly Retention = IF(HASONEVALUE(Retention[month]), DIVIDE(SUM(Retention[retained_from_previous_month]), SUM(Retention[previous_month_customers])))
+
+// Retention
+Returning Share = DIVIDE(SUM(Retention[returning_customers]), SUM(Retention[active_customers]))
+
+// Retention
+New Observed Customers = SUM(Retention[new_observed_customers])
+
+// Retention
+Returning Customers = SUM(Retention[returning_customers])
+
+// Predictions
+Scored Customers = COUNTROWS(Predictions)
+
+// Predictions
+Mean Probability = AVERAGE(Predictions[probability])
+
+// Predictions
+Likely Repeat Customers = SUM(Predictions[predicted_repeat])
+
+// Predictions
+Prediction Date = MAX(Predictions[snapshot_date])
+
+// Performance
+Average Precision = AVERAGE(Performance[average_precision])
+
+// Performance
+Base Rate = AVERAGE(Performance[prevalence])
+
+// Performance
+Top Decile Lift = AVERAGE(Performance[lift_at_top_10pct])

@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+data/raw/
+*.log
+.streamlit/secrets.toml
+**/.pbi/cache.abf
+**/.pbi/localSettings.json
+artifacts/schema_cache/
+data/processed/

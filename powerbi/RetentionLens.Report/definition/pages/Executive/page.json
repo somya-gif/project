@@ -1,0 +1,8 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.0.0/schema.json",
+  "name": "Executive",
+  "displayName": "01 | Sales \u00b7 GBP \u00b7 final day partial",
+  "displayOption": "FitToPage",
+  "width": 1280,
+  "height": 720
+}

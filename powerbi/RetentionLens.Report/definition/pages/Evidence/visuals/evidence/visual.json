@@ -1,0 +1,130 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.4.0/schema.json",
+  "name": "evidence",
+  "position": {
+    "x": 830,
+    "y": 20,
+    "z": 0,
+    "width": 430,
+    "height": 660,
+    "tabOrder": 0
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Performance"
+                    }
+                  },
+                  "Property": "snapshot_date"
+                }
+              },
+              "queryRef": "Performance.snapshot_date",
+              "nativeQueryRef": "snapshot_date"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Performance"
+                    }
+                  },
+                  "Property": "n"
+                }
+              },
+              "queryRef": "Performance.n",
+              "nativeQueryRef": "n"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Performance"
+                    }
+                  },
+                  "Property": "precision"
+                }
+              },
+              "queryRef": "Performance.precision",
+              "nativeQueryRef": "precision"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Performance"
+                    }
+                  },
+                  "Property": "recall"
+                }
+              },
+              "queryRef": "Performance.recall",
+              "nativeQueryRef": "recall"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Performance"
+                    }
+                  },
+                  "Property": "f1"
+                }
+              },
+              "queryRef": "Performance.f1",
+              "nativeQueryRef": "f1"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "Performance"
+                    }
+                  },
+                  "Property": "brier_score"
+                }
+              },
+              "queryRef": "Performance.brier_score",
+              "nativeQueryRef": "brier_score"
+            }
+          ]
+        }
+      }
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Evaluation details'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "input_rows": 1067371,
+  "exact_duplicate_rows": 34335,
+  "missing_customer_rows": 235151,
+  "purchase_lines": 1007913,
+  "credit_lines": 19103,
+  "excluded_other_rows": 6020,
+  "anonymous_purchase_lines": 228488,
+  "gross_sales_gbp": 20476260.448,
+  "credits_gbp": 1462424.1800000002,
+  "min_timestamp": "2009-12-01 07:45:00",
+  "max_timestamp": "2011-12-09 12:50:00"
+}

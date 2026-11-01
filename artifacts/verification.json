@@ -1,0 +1,24 @@
+{
+  "verification_date_user_timezone": "2026-11-01",
+  "automated_tests": {"run": 12, "passed": 12, "failed": 0},
+  "tested": [
+    "Point-in-time cutoff and exclusive target-end boundaries",
+    "Censored label windows rejected",
+    "Future revenue changes do not alter historical features",
+    "Anonymous sales, duplicate rows and credits handled separately",
+    "Gross sales, credits and order counts reconcile across exports",
+    "Cohort values bounded and incomplete months excluded",
+    "Chronological split separation and unique customer snapshots",
+    "All 5877 exported customer scores match model inference",
+    "All five Streamlit pages execute without application exceptions",
+    "Customer selection and empty audience flows"
+  ],
+  "powerbi_json_schema_files_passed": 33,
+  "powerbi_desktop_open_refresh_render": "NOT RUN",
+  "pbix_saved_and_reopened": "NOT RUN - PBIX not included",
+  "windows_execution": "NOT RUN - local runtime is Linux",
+  "streamlit_cloud_deployment": "NOT RUN",
+  "remote_github_ci": "NOT RUN",
+  "static_measured_evidence_figure": "Generated from exports and visually inspected",
+  "known_fix": "Round-trip CSV float parsing avoids two model-score discrepancies from default parser rounding"
+}
